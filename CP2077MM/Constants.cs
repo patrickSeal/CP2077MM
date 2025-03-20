@@ -17,7 +17,7 @@ namespace CP2077MM
         public readonly static string DIR_SETTINGS_PATH = @"C:\\ProgramData\CP2077ModManager";
         public readonly static string DESCRIPTION = "Cyberpunk 2077 Mod Manager ";
         public readonly static string UNKNOWN_STRING = "unknown";
-        public readonly static string GIT_REPO = @"https://www.cyberpunk.net/";
+        public readonly static string GIT_REPO = @"https://github.com/patrickSeal/CP2077MM";
         public readonly static string CYBERPUNK2077_NET = @"https://www.cyberpunk.net/";
         public readonly static string NEXUSMODS_WEB = @"https://www.nexusmods.com/cyberpunk2077/mods";
 
