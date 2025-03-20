@@ -60,6 +60,10 @@ namespace WinFormsApp1
             File.Copy(@".\CP2077MM.exe", programDir + @"CP2077ModManager.exe", true);
             File.Copy(@".\CP2077MM.dll", programDir + @"CP2077MM.dll", true);
             File.Copy(@".\CP2077MM.runtimeconfig.json", programDir + @"CP2077MM.runtimeconfig.json", true);
+            File.Copy(@".\CP2077MM.deps.json", programDir + @"CP2077MM.deps.json", true);
+            File.Copy(@".\CP2077MM.deps.json", programDir + @"CP2077MM.deps.json", true);
+            File.Copy(@".\CP2077MM.pdb", programDir + @"CP2077MM.pdb", true);
+            File.Copy(@".\Newtonsoft.Json.dll", programDir + @"Newtonsoft.Json.dll", true);
 
             // Creating Profile File
 

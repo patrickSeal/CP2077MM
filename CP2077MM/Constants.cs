@@ -11,7 +11,7 @@ namespace CP2077MM
     class Constants
     {
         public readonly static string NAME = "Cyberpunk 2077 Mod Manager";
-        public readonly static string VERSION = "1.0";
+        public readonly static string VERSION = "0.1.0";
         public readonly static string AUTHOR = "SealsAreCute";
         public readonly static string FILE_SETTINGS_PATH = @"C:\\ProgramData\CP2077ModManager\settings.json";
         public readonly static string DIR_SETTINGS_PATH = @"C:\\ProgramData\CP2077ModManager";
