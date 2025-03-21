@@ -6,9 +6,9 @@ This is a pre-release and therefore lacks many features that I want to add in th
 But the basic functionality is there, for installing, deleting and informing about the mods you want to use.
 
 ## 1. Installation:
-- Download the zip file from NexusMods
-﻿- Extract the zip file
-﻿- Run the "CP2077MM.exe" file
+* Download the zip file from NexusMods
+* Extract the zip file
+* Run the "CP2077MM.exe" file
 
 
 ## 2. Currently supported features:
