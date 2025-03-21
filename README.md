@@ -24,13 +24,12 @@ But the basic functionality is there, for installing, deleting and informing abo
 + adding update mod functionality
 
 ## Features that potentially will be added in the future
-﻿
  - Managing config files of mods
 - Downloading and updating mods using the manager (only for NexusMods Premium users)
 - Many more things...
 
-## Deinstallation:
-﻿1. Delete the directory where you installed the mod manager
+## Deinstallation
+1. Delete the directory where you installed the mod manager
 2. Delete the "CP2077ModManager" directory in "C:\ProgramData\"
 
 If you have a feature request or encounter any useability breaking bugs or have any questions, please create leave an issue or open a discussion.
