@@ -14,7 +14,7 @@ But the basic functionality is there, for installing, deleting and informing abo
 
 
 ## Currently supported features
-﻿- Installing mods from zip/rar archives (into the standard directory)
+- Installing mods from zip/rar archives (into the standard directory)
 - Deleting mods safely
 - Informing about requirements when installing a mod
 - Informing about requirements of installed mods, if not installed
