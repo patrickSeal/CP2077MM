@@ -1,6 +1,8 @@
 # Cyberpunk 2077 Mod Manager
 An open-source mod manager for Cyberpunk 2077. Install and delete your mods with a beautiful user interface. The manager informs you about the requirements that you need and keeps track of all the files installed by mods, to safely remove them at any time.
 
+### Version 0.2.0-alpha is out right now!
+
 ### Important
 This is a pre-release and therefore lacks many features that I want to add in the future.
 But the basic functionality is there, for installing, deleting and informing about the mods you want to use.
