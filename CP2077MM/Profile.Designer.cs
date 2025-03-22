@@ -170,9 +170,9 @@
             cB_01.BackColor = Color.Transparent;
             cB_01.Location = new Point(50, 249);
             cB_01.Name = "cB_01";
-            cB_01.Size = new Size(212, 21);
+            cB_01.Size = new Size(209, 21);
             cB_01.TabIndex = 14;
-            cB_01.Text = "Disable automatic update check";
+            cB_01.Text = "Enable automatic update check";
             cB_01.TextAlign = ContentAlignment.TopLeft;
             cB_01.UseVisualStyleBackColor = false;
             // 

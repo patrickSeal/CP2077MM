@@ -64,10 +64,10 @@ namespace WinFormsApp1
             File.Copy(@".\CP2077MM.deps.json", programDir + @"CP2077MM.deps.json", true);
             File.Copy(@".\CP2077MM.pdb", programDir + @"CP2077MM.pdb", true);
             File.Copy(@".\Newtonsoft.Json.dll", programDir + @"Newtonsoft.Json.dll", true);
-            File.Copy(@".\Newtonsoft.Json.dll", programDir + @"SharpCompress.dll", true);
-            File.Copy(@".\Newtonsoft.Json.dll", programDir + @"ZstdSharp.dll", true);
-            File.Copy(@".\Newtonsoft.Json.dll", programDir + @"dirManager.json", true);
-            File.Copy(@".\Newtonsoft.Json.dll", programDir + @"dirManager.json.backup", true);
+            File.Copy(@".\SharpCompress.dll", programDir + @"SharpCompress.dll", true);
+            File.Copy(@".\ZstdSharp.dll", programDir + @"ZstdSharp.dll", true);
+            File.Copy(@".\dirManager.json", programDir + @"dirManager.json", true);
+            File.Copy(@".\dirManager.backup.json", programDir + @"dirManager.backup.json", true);
 
             // Creating Profile File
 
