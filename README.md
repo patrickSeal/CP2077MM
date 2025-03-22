@@ -14,16 +14,18 @@ But the basic functionality is there, for installing, deleting and informing abo
 
 
 ## Currently supported features
-- Installing mods from zip files (into the standard directory)
-- Deleting mods safely (using the Uninstall by ID option => easier option will be added in the next update)
+﻿- Installing mods from zip/rar archives (into the standard directory)
+- Deleting mods safely
 - Informing about requirements when installing a mod
 - Informing about requirements of installed mods, if not installed
 - Uses NexusModsAPI for metadata information about the mods
 - Verifys a mod with NexusMods hash
+- Update information for all your installed mods
 
 ## Features in Development
-+ adding non standard installation options for mods (maybe through json file provided by the mod author or the mod manager)
-+ adding update mod functionality
+- Working: adding a feature to change the load order of different archive files
+- Working: adding a feature to scan for already installed mods (profiler is already done, analysis in development)
+- Paused: adding non standard installation options for mods (maybe through json file provided by the mod author or the mod manager)
 
 ## Features that potentially will be added in the future
  - Managing config files of mods
