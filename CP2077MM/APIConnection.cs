@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CP2077MM;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -14,7 +16,8 @@ namespace WinFormsApp1
         private string API_KEY = "";
         private string URL = "https://api.nexusmods.com/";
         private string MODS_BASE_ADDRESS = "v1/games/cyberpunk2077/mods/";
-        private readonly static string UNAUTHORIZED = "unauthorized";
+        public readonly static string UNAUTHORIZED = "unauthorized";
+        public readonly static string UNEXPECTED_API_ERROR = "unexpected_api_error";
 
         static readonly HttpClient client = new HttpClient();
         static HttpRequestHeaders headers = client.DefaultRequestHeaders;
@@ -53,11 +56,12 @@ namespace WinFormsApp1
             if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
                 // apikey not working
+                MessageBox.Show("NexusMods API authorization failed, is your APIKEY up to date? Please add a new file key in Choom -> Profile -> Apikey", "HTTP error: unauthorized");
                 return UNAUTHORIZED;
             }
             if(!response.IsSuccessStatusCode)
             {
-                // TODO: Major Error no quick fix...
+                return UNEXPECTED_API_ERROR;
             }
             string responseBody = await response.Content.ReadAsStringAsync();
             Console.WriteLine(responseBody);
@@ -83,7 +87,15 @@ namespace WinFormsApp1
             HTTPrequest.Headers.Add("apikey", API_KEY);
 
             using HttpResponseMessage response = await client.SendAsync(HTTPrequest);
-            response.EnsureSuccessStatusCode();
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                MessageBox.Show("NexusMods API authorization failed, is your APIKEY up to date? Please add a new file key in Choom -> Profile -> Apikey", "HTTP error: unauthorized");
+                return UNAUTHORIZED;
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                return UNEXPECTED_API_ERROR;
+            }
             string responseBody = await response.Content.ReadAsStringAsync();
             Console.WriteLine(responseBody);
             return responseBody;
@@ -98,7 +110,15 @@ namespace WinFormsApp1
             //headers.Add("accept", "application/json");
             //headers.Add("apikey", API_KEY);
             using HttpResponseMessage response = await client.PostAsync(req_complete, httpContent);
-            response.EnsureSuccessStatusCode();
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                MessageBox.Show("NexusMods API authorization failed, is your APIKEY up to date? Please add a new file key in Choom -> Profile -> Apikey", "HTTP error: unauthorized");
+                return UNAUTHORIZED;
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                return UNEXPECTED_API_ERROR;
+            }
             string responseBody = await response.Content.ReadAsStringAsync();
             Console.WriteLine(responseBody);
             return responseBody;
@@ -153,11 +173,11 @@ namespace WinFormsApp1
         /**
          * Retrieve specified mod, from a specified game. Cached for 5 minutes.
          */
-        public async Task<MODS_GET_RETRIEVEMOD> MODS_GET_retrieveMod(string mod_id)
+        public async Task<Mod> MODS_GET_retrieveMod(string mod_id)
         {
             string request = MODS_BASE_ADDRESS + mod_id + ".json";
             string answer = await HTTP_GET_REQUEST(request, "");
-            return JsonSerializer.Deserialize<MODS_GET_RETRIEVEMOD>(answer);
+            return JsonConvert.DeserializeObject<Mod>(answer);
         }
 
         /**
@@ -245,7 +265,7 @@ namespace WinFormsApp1
             string request = "v1/users/validate.json";
             string result = await HTTP_GET_REQUEST(request, "");
             if (result.Equals(UNAUTHORIZED)) return null;
-            return JsonSerializer.Deserialize<USER_GET_VALIDATE>(result)!;
+            return JsonConvert.DeserializeObject<USER_GET_VALIDATE>(result);
         }
 
         /**

@@ -16,7 +16,7 @@ using WinFormsApp1;
 
 namespace CP2077MM.CP2077MM_Files
 {
-    class ModEntry
+    public class ModEntry
     {
         public long mod_id;
         public string hash;
@@ -32,7 +32,7 @@ namespace CP2077MM.CP2077MM_Files
         }
     }
 
-    class ModIndex
+    public class ModIndex
     {
         DataSet dataSet;
         DataTable mods;
@@ -102,7 +102,7 @@ namespace CP2077MM.CP2077MM_Files
             return 0;
         }
 
-        public int removeEntryByID(int mod_id)
+        public int removeEntryByID(long mod_id)
         {
             int row = containsMOD_ID(mod_id);
             if (row == -1) return -1;

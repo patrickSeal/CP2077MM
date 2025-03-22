@@ -36,6 +36,14 @@ namespace CP2077MM
                 lbl_07.ForeColor = Color.Black;
             }
             lbl_05.Text = lbl_05.Text + "    " + profile.email;
+
+            if (profile.auto_update_check)
+            {
+                cB_01.CheckState = CheckState.Checked;
+            }else
+            {
+                cB_01.CheckState= CheckState.Unchecked;
+            }
         }
         private void btn_close_Click(object sender, EventArgs e)
         {
@@ -66,7 +74,15 @@ namespace CP2077MM
             else
             {
                 MainProgram.PROFILE_FILE.apikey = newAPIkey;
-                this.Close();
+                if (cB_01.Checked)
+                {
+                    profile.auto_update_check = true;
+                }else
+                {
+                    profile.auto_update_check = false;
+                }
+                FileHandler.updateJSON_FILE(MainProgram.PROFILE_FILE_PATH, profile);
+                Close();
             }
         }
 

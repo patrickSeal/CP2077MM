@@ -3,15 +3,13 @@ using CP2077MM.CP2077MM_Files;
 using CP2077MM.Integrity;
 using CP2077MM.Mod_Install;
 using CP2077MM.Uninstall_Dialogs;
-using CP2077MM.Web;
-using System.Drawing.Imaging;
-using static System.Net.WebRequestMethods;
+using CP2077MM.Update;
+
 
 namespace WinFormsApp1
 {
     public partial class CP2077MM : Form
     {
-        string selectedTreeNode;
 
         public CP2077MM()
         {
@@ -24,6 +22,8 @@ namespace WinFormsApp1
          */
         private async void CP2077MM_LoadAsync(object sender, EventArgs e)
         {
+            pgB_main.Visible = false;
+            lbl_update.Text = "";
             /**
              * Check for Cyberpunk 2077 Installation Directory
              */
@@ -39,13 +39,32 @@ namespace WinFormsApp1
                 lbl_premium_indicator.Text = "Active";
                 lbl_premium_indicator.ForeColor = Color.DarkGreen;
             }
-            //APIConnection con = new APIConnection("M0wlumMY6lzMJfgDa7oSjo4U/FGzRN35BGYHFp9FwPTqQVQPYFq+Mncs4w==--DLbZRJxQv9VUpdS1--ro5le+A+jqCcv3ipUhGuzg==");
-            //await con.MODFILES_GET_files("19991", "main");
-            //await con.MODFILES_GET_modFile("19991", "102700");
-            //await con.MODFILES_GET_preview("https://file-metadata.nexusmods.com/file/nexus-files-s3-meta/3333/19991/Steel and Ink Tattoo - CCXL-19991-1-0-1-1741777635.zip.json");
 
             updateModTree();
 
+            // Check for auto updates
+            if (MainProgram.PROFILE_FILE.auto_update_check)
+            {
+                Update update = new Update(pgB_main);
+                List<(ModEntry, ModEntry)> entries = await update.getUpdates();
+                if (entries.Count != 0)
+                {
+                    AvailableUpdates availableUpdates = new AvailableUpdates(entries);
+                    availableUpdates.ShowDialog();
+                }
+            }
+            // Check for Mod Manager updates
+            APIConnection con = new APIConnection(MainProgram.PROFILE_FILE.apikey);
+            Mod manager = await con.MODS_GET_retrieveMod("20439");
+            Console.WriteLine(manager.version + " | " + MainProgram.SETTINGS_FILE.version);
+            if (manager.version.Equals(MainProgram.SETTINGS_FILE.version))
+            {
+                lbl_update.Text = "";
+            }
+            else
+            {
+                lbl_update.Text = "Update available!";
+            }
         }
 
         private void updateModTree()
@@ -142,14 +161,16 @@ namespace WinFormsApp1
          */
         private void menu_install_zip_Click(object sender, EventArgs e)
         {
-            ModFromZip modFromZip_Form = new ModFromZip();
+            ModFromArchive modFromZip_Form = new ModFromArchive();
             modFromZip_Form.ShowDialog();
+            updateModTree();
         }
 
         private void uninstallModByIDToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UninstallByID uninstallByID = new UninstallByID();
             uninstallByID.ShowDialog();
+            updateModTree();
         }
 
         private void menu_installed_load_Click(object sender, EventArgs e)
@@ -195,10 +216,107 @@ namespace WinFormsApp1
             Dependencies deps = new Dependencies();
             deps.checkRequirements();
             var result = MessageBox.Show("Requirements check was done. Do you want to see which mods are missing?", "Info", MessageBoxButtons.YesNo);
-            if(result == DialogResult.Yes)
+            if (result == DialogResult.Yes)
             {
-                MissingRequirements mRform = new MissingRequirements(deps.getMissingReqs());
+                MissingRequirements mRform = new MissingRequirements(deps.getMissingReqs(), pgB_main);
                 mRform.ShowDialog();
+            }
+        }
+
+        private void updateAllModsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        /*
+         * Shows the mods that need an update
+         */
+        private async void checkForUpdatedsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Update update = new Update(pgB_main);
+            List<(ModEntry, ModEntry)> entries = await update.getUpdates();
+            if (entries.Count == 0)
+            {
+                MessageBox.Show("All your mods are up to date choom!", "Update Info");
+            }
+            else
+            {
+                AvailableUpdates availableUpdates = new AvailableUpdates(entries);
+                availableUpdates.ShowDialog();
+            }
+        }
+
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = @"https://github.com/patrickSeal/CP2077MM/wiki",
+                UseShellExecute = true
+            });
+        }
+
+        private void lbl_update_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = @"https://www.nexusmods.com/cyberpunk2077/mods/20439?tab=files",
+                UseShellExecute = true
+            });
+        }
+
+        private void modView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+        }
+
+        /**
+        * Opens a Mouse menu to give options for a mod
+        * 
+        */
+        private void modView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                modView.SelectedNode = e.Node;
+                if (e.Node == null)
+                {
+                    Error.UnexpectedError("CP2077MM.modView_NodeMouseClick() - e.Node was NULL");
+                    return;
+                }
+                e.Node.ContextMenuStrip = mod_context;
+                mod_context.Visible = true;
+            }
+        }
+
+        private void uninstallToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (modView.SelectedNode == null)
+            {
+                Error.UnexpectedError("CP2077MM.uninstallToolStripMenuItem_Click() - modView.SelectedNode was NULL");
+                return;
+            }
+            if (modView.SelectedNode.FirstNode == null)
+            {
+                Error.UnexpectedError("CP2077MM.uninstallToolStripMenuItem_Click() - modView.SelectedNode.FirstNode was NULL");
+                return;
+            }
+            if (modView.SelectedNode.FirstNode.NextNode == null)
+            {
+                Error.UnexpectedError("CP2077MM.uninstallToolStripMenuItem_Click() - modView.SelectedNode.FirstNode.NextNode was NULL");
+                return;
+            }
+            TreeNode id = modView.SelectedNode.FirstNode.NextNode;
+            long mod_id = Int64.Parse(id.Text.Substring(3));
+            ModHandling.MOD_DELETE(mod_id);
+            updateModTree();
+        }
+
+        private void profileCyberpunk2077ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var result = MessageBox.Show("Hey choom! Creating a profile of Cyberpunk2077 should only be done on a completely unmodded install. If your installation is modded, this can lead to mods being not properly deleted! Are you sure you want to continue?", "Not so fast choom!", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                Profiler profiler = new Profiler();
+                profiler.profileCyberpunk2077();
             }
         }
     }

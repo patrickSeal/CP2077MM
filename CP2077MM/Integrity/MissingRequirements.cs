@@ -17,19 +17,28 @@ namespace CP2077MM.Integrity
         Dictionary<long, List<Dependency_Raw>> reqs;
         ModIndex mods;
         APIConnection conn;
-        public MissingRequirements(Dictionary<long, List<Dependency_Raw>> reqs)
+        ProgressBar pB;
+        public MissingRequirements(Dictionary<long, List<Dependency_Raw>> reqs, ProgressBar pB)
         {
             InitializeComponent();
             this.reqs = reqs;
             conn = new APIConnection(MainProgram.PROFILE_FILE.apikey);
             mods = ModIndex.OpenModIndex();
+            this.pB = pB;
         }
 
         private async void MissingRequirements_Load(object sender, EventArgs e)
         {
+            pB.Visible = true;
+            pB.Minimum = 1;
+            pB.Maximum = reqs.Count;
+            pB.Value = 1;
+            pB.Step = 1;
+
             int x = 20, y = 50, j = 1;
             foreach (var (key, value) in reqs)
             {
+                if(value.Count == 0) continue;
                 //CheckBox checkBox = new CheckBox();
                 //checkBox.Location = new Point(x, y);
                 //this.Controls.Add(checkBox);
@@ -44,7 +53,7 @@ namespace CP2077MM.Integrity
                 foreach (Dependency_Raw dep in value)
                 {
 
-                    MODS_GET_RETRIEVEMOD ret = await conn.MODS_GET_retrieveMod(dep.mod_id.ToString());
+                    Mod ret = await conn.MODS_GET_retrieveMod(dep.mod_id.ToString());
 
                     Label name = new Label();
                     y += 20;
@@ -74,7 +83,9 @@ namespace CP2077MM.Integrity
                 }
                 y += 20;
                 j++;
+                pB.PerformStep();
             }
+            pB.Visible = false;
         }
 
         private void linkClicked(object? sender, LinkLabelLinkClickedEventArgs e)

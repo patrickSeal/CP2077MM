@@ -51,6 +51,7 @@ namespace CP2077MM
             else
             {
                 MainProgram.SETTINGS_FILE.cyberpunk_install_dir = txB_06.Text + @"\";
+                FileHandler.updateJSON_FILE(Constants.FILE_SETTINGS_PATH, MainProgram.SETTINGS_FILE);
                 this.Close();
             }
         }

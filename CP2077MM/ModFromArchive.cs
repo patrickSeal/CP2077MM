@@ -10,16 +10,16 @@ using System.Windows.Forms;
 
 namespace CP2077MM
 {
-    public partial class ModFromZip : Form
+    public partial class ModFromArchive : Form
     {
-        public ModFromZip()
+        public ModFromArchive()
         {
             InitializeComponent();
         }
 
         private void ModFromZip_Load(object sender, EventArgs e)
         {
-            file_dialog_select_zip.Filter = "zip archives (*.zip)|*.zip";
+            file_dialog_select_zip.Filter = "Archives|*.zip;*.rar;";
             radio_standard.Checked = true;
             radio_custom.Checked = false;
         }
@@ -33,7 +33,16 @@ namespace CP2077MM
             if (radio_standard.Checked)
             {
                 this.Close();
-                await ModHandling.MOD_INSTALL(modPath, INSTALLATION_TYPE.STANDARD);
+                string file_type = Path.GetExtension(modPath);
+                if (file_type == ".zip") {
+                    await ModHandling.MOD_INSTALL(modPath, INSTALLATION_TYPE.STANDARD, PACKAGE_TYPE.ZIP_ARCHIVE);
+                }else if(file_type == ".rar")
+                {
+                    await ModHandling.MOD_INSTALL(modPath, INSTALLATION_TYPE.STANDARD, PACKAGE_TYPE.RAR_ARCHIVE);
+                }else
+                {
+                    MessageBox.Show("This file type is not supported!", "Error: unexpected file type");
+                }
             }
             else if (radio_custom.Checked)
             {

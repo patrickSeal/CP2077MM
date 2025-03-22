@@ -41,6 +41,7 @@
             txB_02 = new TextBox();
             btn_sync = new Button();
             error_lbl = new Label();
+            cB_01 = new CheckBox();
             SuspendLayout();
             // 
             // btn_apply
@@ -163,6 +164,18 @@
             error_lbl.Size = new Size(0, 17);
             error_lbl.TabIndex = 13;
             // 
+            // cB_01
+            // 
+            cB_01.AutoSize = true;
+            cB_01.BackColor = Color.Transparent;
+            cB_01.Location = new Point(50, 249);
+            cB_01.Name = "cB_01";
+            cB_01.Size = new Size(212, 21);
+            cB_01.TabIndex = 14;
+            cB_01.Text = "Disable automatic update check";
+            cB_01.TextAlign = ContentAlignment.TopLeft;
+            cB_01.UseVisualStyleBackColor = false;
+            // 
             // Profile
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
@@ -170,6 +183,7 @@
             BackColor = SystemColors.ControlLightLight;
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             ClientSize = new Size(800, 510);
+            Controls.Add(cB_01);
             Controls.Add(error_lbl);
             Controls.Add(btn_sync);
             Controls.Add(txB_02);
@@ -208,5 +222,6 @@
         private TextBox txB_02;
         private Button btn_sync;
         private Label error_lbl;
+        private CheckBox cB_01;
     }
 }

@@ -31,6 +31,7 @@ namespace WinFormsApp1
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CP2077MM));
             img_cyberpunk = new PictureBox();
             lbl_premium = new Label();
@@ -41,12 +42,12 @@ namespace WinFormsApp1
             menu_install_file = new ToolStripMenuItem();
             browseModsToolStripMenuItem = new ToolStripMenuItem();
             updateToolStripMenuItem = new ToolStripMenuItem();
-            updateSingleModToolStripMenuItem = new ToolStripMenuItem();
-            updateAllModsToolStripMenuItem = new ToolStripMenuItem();
+            checkForUpdatedsToolStripMenuItem = new ToolStripMenuItem();
             installedModsToolStripMenuItem = new ToolStripMenuItem();
             menu_installed_load = new ToolStripMenuItem();
             uninstallModByIDToolStripMenuItem = new ToolStripMenuItem();
             checkDependenciesToolStripMenuItem = new ToolStripMenuItem();
+            profileCyberpunk2077ToolStripMenuItem = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             menu_user = new ToolStripMenuItem();
             menu_user_profile = new ToolStripMenuItem();
@@ -56,9 +57,14 @@ namespace WinFormsApp1
             modView = new TreeView();
             lbl_modView = new Label();
             btn_view_refresh = new Button();
+            lbl_update = new LinkLabel();
+            mod_context = new ContextMenuStrip(components);
+            uninstallToolStripMenuItem = new ToolStripMenuItem();
+            pgB_main = new ProgressBar();
             ((System.ComponentModel.ISupportInitialize)img_cyberpunk).BeginInit();
             ((System.ComponentModel.ISupportInitialize)img_github).BeginInit();
             menuStrip1.SuspendLayout();
+            mod_context.SuspendLayout();
             SuspendLayout();
             // 
             // img_cyberpunk
@@ -128,7 +134,7 @@ namespace WinFormsApp1
             menu_install_zip.Image = (Image)resources.GetObject("menu_install_zip.Image");
             menu_install_zip.Name = "menu_install_zip";
             menu_install_zip.Size = new Size(315, 24);
-            menu_install_zip.Text = "Install from Zip Archive";
+            menu_install_zip.Text = "Install from Archive";
             menu_install_zip.Click += menu_install_zip_Click;
             // 
             // menu_install_file
@@ -150,27 +156,23 @@ namespace WinFormsApp1
             // 
             // updateToolStripMenuItem
             // 
-            updateToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { updateSingleModToolStripMenuItem, updateAllModsToolStripMenuItem });
+            updateToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { checkForUpdatedsToolStripMenuItem });
             updateToolStripMenuItem.Image = (Image)resources.GetObject("updateToolStripMenuItem.Image");
             updateToolStripMenuItem.Name = "updateToolStripMenuItem";
             updateToolStripMenuItem.Size = new Size(128, 28);
             updateToolStripMenuItem.Text = "Update Mods";
             // 
-            // updateSingleModToolStripMenuItem
+            // checkForUpdatedsToolStripMenuItem
             // 
-            updateSingleModToolStripMenuItem.Name = "updateSingleModToolStripMenuItem";
-            updateSingleModToolStripMenuItem.Size = new Size(208, 24);
-            updateSingleModToolStripMenuItem.Text = "Update Single Mod";
-            // 
-            // updateAllModsToolStripMenuItem
-            // 
-            updateAllModsToolStripMenuItem.Name = "updateAllModsToolStripMenuItem";
-            updateAllModsToolStripMenuItem.Size = new Size(208, 24);
-            updateAllModsToolStripMenuItem.Text = "Update All Mods";
+            checkForUpdatedsToolStripMenuItem.Image = (Image)resources.GetObject("checkForUpdatedsToolStripMenuItem.Image");
+            checkForUpdatedsToolStripMenuItem.Name = "checkForUpdatedsToolStripMenuItem";
+            checkForUpdatedsToolStripMenuItem.Size = new Size(210, 24);
+            checkForUpdatedsToolStripMenuItem.Text = "Check for Updateds";
+            checkForUpdatedsToolStripMenuItem.Click += checkForUpdatedsToolStripMenuItem_Click;
             // 
             // installedModsToolStripMenuItem
             // 
-            installedModsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { menu_installed_load, uninstallModByIDToolStripMenuItem, checkDependenciesToolStripMenuItem });
+            installedModsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { menu_installed_load, uninstallModByIDToolStripMenuItem, checkDependenciesToolStripMenuItem, profileCyberpunk2077ToolStripMenuItem });
             installedModsToolStripMenuItem.Image = (Image)resources.GetObject("installedModsToolStripMenuItem.Image");
             installedModsToolStripMenuItem.Name = "installedModsToolStripMenuItem";
             installedModsToolStripMenuItem.Size = new Size(137, 28);
@@ -180,7 +182,7 @@ namespace WinFormsApp1
             // 
             menu_installed_load.Image = (Image)resources.GetObject("menu_installed_load.Image");
             menu_installed_load.Name = "menu_installed_load";
-            menu_installed_load.Size = new Size(217, 24);
+            menu_installed_load.Size = new Size(238, 24);
             menu_installed_load.Text = "Load Installed Mods";
             menu_installed_load.Click += menu_installed_load_Click;
             // 
@@ -188,16 +190,26 @@ namespace WinFormsApp1
             // 
             uninstallModByIDToolStripMenuItem.Image = (Image)resources.GetObject("uninstallModByIDToolStripMenuItem.Image");
             uninstallModByIDToolStripMenuItem.Name = "uninstallModByIDToolStripMenuItem";
-            uninstallModByIDToolStripMenuItem.Size = new Size(217, 24);
+            uninstallModByIDToolStripMenuItem.Size = new Size(238, 24);
             uninstallModByIDToolStripMenuItem.Text = "Uninstall Mod by ID";
             uninstallModByIDToolStripMenuItem.Click += uninstallModByIDToolStripMenuItem_Click;
             // 
             // checkDependenciesToolStripMenuItem
             // 
+            checkDependenciesToolStripMenuItem.Image = (Image)resources.GetObject("checkDependenciesToolStripMenuItem.Image");
             checkDependenciesToolStripMenuItem.Name = "checkDependenciesToolStripMenuItem";
-            checkDependenciesToolStripMenuItem.Size = new Size(217, 24);
+            checkDependenciesToolStripMenuItem.Size = new Size(238, 24);
             checkDependenciesToolStripMenuItem.Text = "Check Dependencies";
             checkDependenciesToolStripMenuItem.Click += checkDependenciesToolStripMenuItem_Click;
+            // 
+            // profileCyberpunk2077ToolStripMenuItem
+            // 
+            profileCyberpunk2077ToolStripMenuItem.Font = new Font("Play", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            profileCyberpunk2077ToolStripMenuItem.Image = (Image)resources.GetObject("profileCyberpunk2077ToolStripMenuItem.Image");
+            profileCyberpunk2077ToolStripMenuItem.Name = "profileCyberpunk2077ToolStripMenuItem";
+            profileCyberpunk2077ToolStripMenuItem.Size = new Size(238, 24);
+            profileCyberpunk2077ToolStripMenuItem.Text = "Profile Cyberpunk2077";
+            profileCyberpunk2077ToolStripMenuItem.Click += profileCyberpunk2077ToolStripMenuItem_Click;
             // 
             // helpToolStripMenuItem
             // 
@@ -206,6 +218,7 @@ namespace WinFormsApp1
             helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             helpToolStripMenuItem.Size = new Size(69, 28);
             helpToolStripMenuItem.Text = "Help";
+            helpToolStripMenuItem.Click += helpToolStripMenuItem_Click;
             // 
             // menu_user
             // 
@@ -236,8 +249,9 @@ namespace WinFormsApp1
             // 
             chippinInToolStripMenuItem.BackColor = Color.Yellow;
             chippinInToolStripMenuItem.Font = new Font("Play", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            chippinInToolStripMenuItem.Image = (Image)resources.GetObject("chippinInToolStripMenuItem.Image");
             chippinInToolStripMenuItem.Name = "chippinInToolStripMenuItem";
-            chippinInToolStripMenuItem.Size = new Size(114, 28);
+            chippinInToolStripMenuItem.Size = new Size(130, 28);
             chippinInToolStripMenuItem.Text = "Chippin' in";
             chippinInToolStripMenuItem.Click += chippinInToolStripMenuItem_Click;
             // 
@@ -255,11 +269,13 @@ namespace WinFormsApp1
             // 
             // modView
             // 
-            modView.BackColor = SystemColors.ButtonHighlight;
+            modView.BackColor = Color.White;
             modView.Location = new Point(12, 90);
             modView.Name = "modView";
             modView.Size = new Size(263, 761);
             modView.TabIndex = 7;
+            modView.AfterSelect += modView_AfterSelect;
+            modView.NodeMouseClick += modView_NodeMouseClick;
             // 
             // lbl_modView
             // 
@@ -283,6 +299,45 @@ namespace WinFormsApp1
             btn_view_refresh.UseVisualStyleBackColor = false;
             btn_view_refresh.Click += btn_view_refresh_Click;
             // 
+            // lbl_update
+            // 
+            lbl_update.ActiveLinkColor = Color.Red;
+            lbl_update.AutoSize = true;
+            lbl_update.BackColor = Color.WhiteSmoke;
+            lbl_update.Font = new Font("Play", 20.2499981F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            lbl_update.LinkColor = Color.Red;
+            lbl_update.Location = new Point(973, 3);
+            lbl_update.Name = "lbl_update";
+            lbl_update.Size = new Size(235, 34);
+            lbl_update.TabIndex = 10;
+            lbl_update.TabStop = true;
+            lbl_update.Text = "Update available!";
+            lbl_update.LinkClicked += lbl_update_LinkClicked;
+            // 
+            // mod_context
+            // 
+            mod_context.BackColor = SystemColors.ButtonHighlight;
+            mod_context.Font = new Font("Play", 9.749999F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            mod_context.Items.AddRange(new ToolStripItem[] { uninstallToolStripMenuItem });
+            mod_context.Name = "mod_context";
+            mod_context.Size = new Size(133, 26);
+            // 
+            // uninstallToolStripMenuItem
+            // 
+            uninstallToolStripMenuItem.Font = new Font("Play", 9.749999F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            uninstallToolStripMenuItem.Image = (Image)resources.GetObject("uninstallToolStripMenuItem.Image");
+            uninstallToolStripMenuItem.Name = "uninstallToolStripMenuItem";
+            uninstallToolStripMenuItem.Size = new Size(132, 22);
+            uninstallToolStripMenuItem.Text = "Uninstall";
+            uninstallToolStripMenuItem.Click += uninstallToolStripMenuItem_Click;
+            // 
+            // pgB_main
+            // 
+            pgB_main.Location = new Point(281, 828);
+            pgB_main.Name = "pgB_main";
+            pgB_main.Size = new Size(1461, 23);
+            pgB_main.TabIndex = 11;
+            // 
             // CP2077MM
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
@@ -291,6 +346,8 @@ namespace WinFormsApp1
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1754, 863);
+            Controls.Add(pgB_main);
+            Controls.Add(lbl_update);
             Controls.Add(btn_view_refresh);
             Controls.Add(lbl_modView);
             Controls.Add(modView);
@@ -313,6 +370,7 @@ namespace WinFormsApp1
             ((System.ComponentModel.ISupportInitialize)img_github).EndInit();
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            mod_context.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -327,8 +385,6 @@ namespace WinFormsApp1
         private ToolStripMenuItem menu_install_file;
         private ToolStripMenuItem browseModsToolStripMenuItem;
         private ToolStripMenuItem updateToolStripMenuItem;
-        private ToolStripMenuItem updateSingleModToolStripMenuItem;
-        private ToolStripMenuItem updateAllModsToolStripMenuItem;
         private ToolStripMenuItem installedModsToolStripMenuItem;
         private ToolStripMenuItem menu_installed_load;
         private ToolStripMenuItem uninstallModByIDToolStripMenuItem;
@@ -342,5 +398,11 @@ namespace WinFormsApp1
         private Label lbl_modView;
         private Button btn_view_refresh;
         private ToolStripMenuItem checkDependenciesToolStripMenuItem;
+        private ToolStripMenuItem checkForUpdatedsToolStripMenuItem;
+        private LinkLabel lbl_update;
+        private ContextMenuStrip mod_context;
+        private ToolStripMenuItem uninstallToolStripMenuItem;
+        private ToolStripMenuItem profileCyberpunk2077ToolStripMenuItem;
+        private ProgressBar pgB_main;
     }
 }

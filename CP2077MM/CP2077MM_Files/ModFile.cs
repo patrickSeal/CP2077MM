@@ -68,6 +68,8 @@ namespace CP2077MM.CP2077MM_Files
 
         public void DeleteModFiles()
         {
+            // check for each directory if the directoryManager has an entry
+            DirectoryManager dirManager = DirectoryManager.OpenDirectoryManager();
             foreach (string file in files)
             {
                 string path = Path.Combine(MainProgram.SETTINGS_FILE.cyberpunk_install_dir, file);
@@ -75,17 +77,42 @@ namespace CP2077MM.CP2077MM_Files
                 bool isDirectory = Directory.Exists(path);
                 if (isFile)
                 {
+                    string dirPath = Path.GetDirectoryName(path);
                     File.Delete(path);
+                    if (dirManager.containsDirectory(dirPath, DIR_TYPE.MOD) == 1)
+                    {
+                        // directory is a mulimod directory
+                        if(!Directory.EnumerateFileSystemEntries(dirPath).Any())
+                        {
+                            // directory is empty -> can be deleted
+                            Directory.Delete(dirPath, true);
+                            dirManager.removeDirectory(dirPath, DIR_TYPE.MOD);
+                        }
+                    }
                 }
                 else if (isDirectory)
                 {
-                    Directory.Delete(path, true);
+                    if (dirManager.containsDirectory(path, DIR_TYPE.MOD) == 1)
+                    {
+                        // directory is a mulimod directory
+                        if (!Directory.EnumerateFileSystemEntries(path).Any())
+                        {
+                            // directory is empty -> can be deleted
+                            Directory.Delete(path, true);
+                            dirManager.removeDirectory(path, DIR_TYPE.MOD);
+                        }
+                    }
+                    else
+                    {
+                        Directory.Delete(path, true);
+                    }
                 }
                 else
                 {
                     Console.WriteLine("[WARNING]: ModFile entry referenced a non existend file or directory!");
                 }
             }
+            dirManager.Save();
             // delete the ModFile itself
             File.Delete(PATH);
         }

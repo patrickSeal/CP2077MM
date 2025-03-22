@@ -28,6 +28,8 @@ namespace CP2077MM
         public bool is_supporter { get; set; } = false;
         public string email { get; set; } = Constants.UNKNOWN_STRING;
         public string profile_url { get; set; } = Constants.UNKNOWN_STRING;
+
+        public bool auto_update_check { get; set; } = true;
     }
 
 }

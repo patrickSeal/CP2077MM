@@ -1,6 +1,6 @@
 ﻿namespace CP2077MM
 {
-    partial class ModFromZip
+    partial class ModFromArchive
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ModFromZip));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ModFromArchive));
             btn_close = new Button();
             btn_Install = new Button();
             lbl_01 = new Label();
@@ -71,9 +71,9 @@
             lbl_01.Font = new Font("Play", 15.7499981F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lbl_01.Location = new Point(12, 11);
             lbl_01.Name = "lbl_01";
-            lbl_01.Size = new Size(287, 27);
+            lbl_01.Size = new Size(265, 27);
             lbl_01.TabIndex = 5;
-            lbl_01.Text = "Installing from a zip archive";
+            lbl_01.Text = "Installing from an archive";
             // 
             // lbl_02
             // 
@@ -81,15 +81,15 @@
             lbl_02.Font = new Font("Play", 9.749999F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lbl_02.Location = new Point(73, 89);
             lbl_02.Name = "lbl_02";
-            lbl_02.Size = new Size(87, 17);
+            lbl_02.Size = new Size(111, 17);
             lbl_02.TabIndex = 6;
-            lbl_02.Text = "Select zip file:";
+            lbl_02.Text = "Select archive file:";
             // 
             // txB_01
             // 
-            txB_01.Location = new Point(166, 87);
+            txB_01.Location = new Point(190, 87);
             txB_01.Name = "txB_01";
-            txB_01.Size = new Size(457, 23);
+            txB_01.Size = new Size(433, 23);
             txB_01.TabIndex = 7;
             // 
             // btn_select
@@ -110,7 +110,7 @@
             // radio_standard
             // 
             radio_standard.AutoSize = true;
-            radio_standard.Location = new Point(166, 142);
+            radio_standard.Location = new Point(190, 142);
             radio_standard.Name = "radio_standard";
             radio_standard.Size = new Size(144, 21);
             radio_standard.TabIndex = 9;
@@ -122,7 +122,7 @@
             // radio_custom
             // 
             radio_custom.AutoSize = true;
-            radio_custom.Location = new Point(166, 169);
+            radio_custom.Location = new Point(190, 169);
             radio_custom.Name = "radio_custom";
             radio_custom.Size = new Size(136, 21);
             radio_custom.TabIndex = 10;
@@ -134,7 +134,7 @@
             // btn_help_01
             // 
             btn_help_01.Font = new Font("Play", 9.749999F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btn_help_01.Location = new Point(316, 140);
+            btn_help_01.Location = new Point(340, 142);
             btn_help_01.Name = "btn_help_01";
             btn_help_01.Size = new Size(25, 25);
             btn_help_01.TabIndex = 11;
@@ -145,7 +145,7 @@
             // button1
             // 
             button1.Font = new Font("Play", 9.749999F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            button1.Location = new Point(316, 167);
+            button1.Location = new Point(340, 167);
             button1.Name = "button1";
             button1.Size = new Size(25, 25);
             button1.TabIndex = 12;
@@ -153,7 +153,7 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
-            // ModFromZip
+            // ModFromArchive
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -171,7 +171,7 @@
             Controls.Add(btn_close);
             Font = new Font("Play", 9.749999F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Name = "ModFromZip";
+            Name = "ModFromArchive";
             Text = "Install mod from zip archive";
             Load += ModFromZip_Load;
             ResumeLayout(false);

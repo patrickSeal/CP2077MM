@@ -3,6 +3,8 @@ using CP2077MM.Mod_Install;
 using CP2077MM.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SharpCompress.Archives;
+using SharpCompress.Archives.Rar;
 using System;
 using System.Collections.Generic;
 using System.IO.Compression;
@@ -12,6 +14,7 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using WinFormsApp1;
+
 
 namespace CP2077MM
 {
@@ -24,18 +27,26 @@ namespace CP2077MM
         SINGLE_DIR
     }
 
+    enum PACKAGE_TYPE
+    {
+        ZIP_ARCHIVE,
+        RAR_ARCHIVE,
+        DIRECTORY,
+        FILE
+    }
+
 
     class ModHandling
     {
         public ModHandling() { }
 
-        public static async Task<int> MOD_INSTALL(string zipPath, INSTALLATION_TYPE type)
+        public static async Task<int> MOD_INSTALL(string path, INSTALLATION_TYPE type, PACKAGE_TYPE ptype)
         {
             // Check if file is from Nexus Mods using MD5 hash
             string hash = string.Empty;
             using (var md5 = MD5.Create())
             {
-                using (var stream = File.OpenRead(zipPath))
+                using (var stream = File.OpenRead(path))
                 {
                     byte[] data = md5.ComputeHash(stream);
                     var sBuilder = new StringBuilder();
@@ -46,7 +57,6 @@ namespace CP2077MM
                     hash = sBuilder.ToString();
                 }
             }
-            Console.WriteLine("[INFO]: hash is " + hash);
 
             // STEP 1: Check if mod is already installed
             ModIndex modIndex = ModIndex.OpenModIndex();
@@ -67,17 +77,16 @@ namespace CP2077MM
             }
 
 
-            // STEP 3: Add mod to modIndex.json
+            // STEP 3: Parse API Call
             dynamic response = JArray.Parse(result);
             JObject mod = (JObject)response[0]["mod"];
             string name = (string)mod["name"];
             long mod_id = (long)mod["mod_id"];
             JObject details = (JObject)response[0]["file_details"];
-            string version = (string)details["mod_version"];
+            string version = (string)mod["version"];
 
             // STEP 4: Check requirements
             List<Requirement> requirements = await Browser.getRequirements(mod_id);
-
             List<Requirement> unsatisfied = new List<Requirement>();
             List<Requirement> satisfied = new List<Requirement>();
             foreach (Requirement req in requirements)
@@ -100,11 +109,33 @@ namespace CP2077MM
                 if (answer == DialogResult.Cancel) return -1;
             }
 
-            // STEP 5: Extract archive
+            // STEP 5: PACKAGE TYPES:
             string extractionPath = Path.Combine(MainProgram.CP2077MM_PATH, "tmp");
-            ZipFile.ExtractToDirectory(zipPath, extractionPath);
-
-            
+            Directory.CreateDirectory(extractionPath);
+            if (ptype == PACKAGE_TYPE.ZIP_ARCHIVE)
+            {
+                // STEP 5.1 ZIP ARCHIVES
+                ZipFile.ExtractToDirectory(path, extractionPath);
+            }else if(ptype == PACKAGE_TYPE.RAR_ARCHIVE)
+            {
+                // STEP 5.2 RAR ARCHIVES 
+                using (var archive = RarArchive.Open(path))
+                {
+                    foreach (var rarentry in archive.Entries.Where(entry => !entry.IsDirectory))
+                    {
+                        rarentry.WriteToDirectory(extractionPath, new SharpCompress.Common.ExtractionOptions()
+                        {
+                            ExtractFullPath = true,
+                            Overwrite = true,
+                        });
+                    }
+                }
+            }else
+            {
+                // Unsupported package type
+                MessageBox.Show("This package type is not supported.", "Error: unexpected mod package format");
+                return -1;
+            }
 
             // STEP 6: Indexing the archive into a mod_id.json file
             string[] files = Directory.GetFiles(extractionPath, ".", SearchOption.AllDirectories);
@@ -118,6 +149,9 @@ namespace CP2077MM
                 j++;
             }
 
+            DirectoryManager dirManager = DirectoryManager.OpenDirectoryManager();
+
+            List<string> createdDirectories = new List<string>();
             // STEP 7: What installation Method is chosen?
             if (type == INSTALLATION_TYPE.STANDARD)
             {
@@ -126,27 +160,61 @@ namespace CP2077MM
                 {
                     FileInfo mFile = new FileInfo(files[i]);
                     string installPath = Path.Combine(MainProgram.SETTINGS_FILE.cyberpunk_install_dir, relativePaths[i]);
+                    string dirPath = Path.GetDirectoryName(installPath);
+                    if(dirPath == null)
+                    {
+                        // Clean up Missing
+                        // TODO
+                    }
+                        
+                    // Check if the file exists already that needs to be installed
                     if (new FileInfo(installPath).Exists == false)
                     {
-                        /** TODO:
-                         *  Creating the mod directories needs more handling
-                         *  because they are not deleted when the mod is uninstalled only the files in the mod_id.json file are deleted!
-                         */
                         FileInfo dInfo = new FileInfo(installPath);
                         try
                         {
+                            // this fails if the path is incomplete -> Director(ies) have to be created
                             mFile.MoveTo(installPath);
+
+                            // if the path exists need to check if it is a native cyberpunk path or if it was created by another mod
+                            if (dirManager.containsDirectory(dirPath, DIR_TYPE.CYBERPUNK2077) == 0 && !createdDirectories.Contains(dirPath))
+                            {
+                                // directory is not cyberpunk2077 native directory => path was created by another mod, add this path to multipurpose mod folders
+                                dirManager.addDirectory(dirPath, DIR_TYPE.MOD);
+                            }
+
                         }
                         catch (Exception e)
                         {
+                            if(dInfo.Directory == null)
+                            {
+                                Error.UnexpectedError("ModHandling.MOD_INSTALL() - dInfo.Directory was NULL -> aborthing Mod installation!");
+                                return -1;
+                            }
                             DirectoryInfo dI = dInfo.Directory;
                             string directory = dI.ToString();
                             relativePaths.Add(directory);
-                            (new FileInfo(installPath)).Directory.Create();
+                            if(dInfo.Directory == null)
+                            {
+                                Error.UnexpectedError("ModHandling.MOD_INSTALL() - newFile.Directory was NULL -> aborthing Mod installation!");
+                                return -1;
+                            }
+                            DirectoryInfo dNew = dInfo.Directory;
+                            dNew.Create();
+                            createdDirectories.Add(dInfo.DirectoryName);
+
+                            // try again after creating the directory
                             mFile.MoveTo(installPath);
                         }
                     }
+                    else
+                    {
+                        // File already exists in the cyberpunk install directory
+                        // TODO:
+                    }
                 }
+
+
                 string[] filesAndDirs = new string[relativePaths.Count];
                 for(int i = 0; i < relativePaths.Count; i++)
                 {
@@ -176,6 +244,8 @@ namespace CP2077MM
                 MessageBox.Show("This type of installation is not supported right now!", "Installation Method");
                 return -1;
             }
+            // saving muliMod directories
+            dirManager.Save();
 
             // STEP 9: UPDATE MOD INDEX
             ModEntry entry = new ModEntry(mod_id, hash, name, version);
@@ -192,11 +262,12 @@ namespace CP2077MM
             return 0;
         }
 
-        public static int MOD_DELETE(int mod_id)
+        public static int MOD_DELETE(long mod_id)
         {
             // STEP 1: Check if mod is actually installed
             ModIndex modIndex = ModIndex.OpenModIndex();
             if (modIndex.containsMOD_ID(mod_id) == -1) return -1;
+            ModEntry modEntry = modIndex.getEntry(mod_id);
 
             // STEP 2: Remove associated files
             ModFile modFile = ModFile.Open(mod_id);
@@ -205,7 +276,8 @@ namespace CP2077MM
             // STEP 3: Remove entry from ModIndex file
             modIndex.removeEntryByID(mod_id);
             modIndex.Save();
-
+            string msg = modEntry.name + " was deleted successfully, all files should be deleted!";
+            MessageBox.Show(msg, "Info");
             return 0;
         }
     }
