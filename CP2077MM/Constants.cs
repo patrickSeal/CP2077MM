@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
-
+﻿
 namespace CP2077MM
 {
 
     class Constants
     {
+        /* Mod Manager Version: */
+        public readonly static string VERSION = "0.2.1-alpha";
+        /** Changelog:
+         *  - 0.2.1-alpha            (patch)
+         *  - 0.2.0-alpha 22.03.2025 (release)
+         *  - 0.1.0-alpha 20.03.2025 (release)
+         */
+
+        // Constants
         public readonly static string NAME = "Cyberpunk 2077 Mod Manager";
-        public readonly static string VERSION = "0.1.0-alpha";
         public readonly static string AUTHOR = "SealsAreCute";
         public readonly static string FILE_SETTINGS_PATH = @"C:\\ProgramData\CP2077ModManager\settings.json";
         public readonly static string DIR_SETTINGS_PATH = @"C:\\ProgramData\CP2077ModManager";

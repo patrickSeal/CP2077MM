@@ -1,11 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using WinFormsApp1;
 
 namespace CP2077MM.CP2077MM_Files
@@ -130,6 +124,14 @@ namespace CP2077MM.CP2077MM_Files
         }
 
         public Dependency_Raw[] getRequirements() { return requirements; }
+
+        public void addDependency(long mod_id)
+        {
+            Dependency_Raw dependency = new Dependency_Raw();
+            dependency.mod_id = mod_id;
+            dependency.installed = true;
+        }
+
 
         public void setReqInstalled(long mod_id, bool value)
         {

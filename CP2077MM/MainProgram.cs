@@ -14,9 +14,9 @@ to deal in the Software without restriction, including without limitation the ri
 and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 */
 using CP2077MM;
-using CP2077MM.CP2077MM_Files;
+using CP2077MM.WPF;
+using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace WinFormsApp1
 {
@@ -113,6 +113,9 @@ static int init()
 
         private static void TEST_MAIN()
         {
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.ShowDialog();
+            
         }
     }
 }

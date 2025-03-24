@@ -1,9 +1,10 @@
 using CP2077MM;
 using CP2077MM.CP2077MM_Files;
 using CP2077MM.Integrity;
-using CP2077MM.Mod_Install;
 using CP2077MM.Uninstall_Dialogs;
 using CP2077MM.Update;
+using CP2077MM.WPF;
+using System.IO;
 
 
 namespace WinFormsApp1
@@ -161,7 +162,7 @@ namespace WinFormsApp1
          */
         private void menu_install_zip_Click(object sender, EventArgs e)
         {
-            ModFromArchive modFromZip_Form = new ModFromArchive();
+            ModFromArchive modFromZip_Form = new ModFromArchive(pgB_main);
             modFromZip_Form.ShowDialog();
             updateModTree();
         }
@@ -215,10 +216,16 @@ namespace WinFormsApp1
         {
             Dependencies deps = new Dependencies();
             deps.checkRequirements();
+            var reqs = deps.getMissingReqs();
+            if (reqs.Count == 0)
+            {
+                MessageBox.Show("All requirements are satisfied choom!", "Info");
+                return;
+            }
             var result = MessageBox.Show("Requirements check was done. Do you want to see which mods are missing?", "Info", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
             {
-                MissingRequirements mRform = new MissingRequirements(deps.getMissingReqs(), pgB_main);
+                MissingRequirements mRform = new MissingRequirements(reqs, pgB_main);
                 mRform.ShowDialog();
             }
         }
@@ -318,6 +325,12 @@ namespace WinFormsApp1
                 Profiler profiler = new Profiler();
                 profiler.profileCyberpunk2077();
             }
+        }
+
+        private void menu_install_file_Click(object sender, EventArgs e)
+        {
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
         }
     }
 }

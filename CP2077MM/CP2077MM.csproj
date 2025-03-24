@@ -7,13 +7,21 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>CP2077MM.ico</ApplicationIcon>
+    <UseWPF>True</UseWPF>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="WPF\Cyberpunk_2077_logo.svg.png" />
+    <None Remove="WPF\github_icon.png" />
+    <None Remove="WPF\icone-github-rose.png" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="CP2077MM.ico" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="LZMA-SDK" Version="22.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SharpCompress" Version="0.39.0" />
   </ItemGroup>
@@ -35,6 +43,14 @@
 
   <ItemGroup>
     <Folder Include="Extensions\" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <Resource Include="Fonts\Play-Bold.ttf" />
+	  <Resource Include="Fonts\Play-Regular.ttf" />
+	  <Resource Include="WPF\Cyberpunk_2077_logo.svg.png" />
+	  <Resource Include="WPF\github_icon.png" />
+	  <Resource Include="WPF\icone-github-rose.png" />
   </ItemGroup>
 
 </Project>

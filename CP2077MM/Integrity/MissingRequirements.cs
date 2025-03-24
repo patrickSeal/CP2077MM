@@ -29,6 +29,12 @@ namespace CP2077MM.Integrity
 
         private async void MissingRequirements_Load(object sender, EventArgs e)
         {
+            if (reqs.Count == 0)
+            {
+                Close();
+                MessageBox.Show("All your requirements are satisfied choom!", "Info");
+                return;
+            }
             pB.Visible = true;
             pB.Minimum = 1;
             pB.Maximum = reqs.Count;

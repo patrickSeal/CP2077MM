@@ -1,18 +1,14 @@
 ﻿using CP2077MM.CP2077MM_Files;
 using CP2077MM.Mod_Install;
 using CP2077MM.Web;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
-using System;
-using System.Collections.Generic;
+using SharpCompress.Archives.SevenZip;
+using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Security.Permissions;
 using System.Text;
-using System.Threading.Tasks;
 using WinFormsApp1;
 
 
@@ -31,6 +27,7 @@ namespace CP2077MM
     {
         ZIP_ARCHIVE,
         RAR_ARCHIVE,
+        _7Z_ARCHIVE,
         DIRECTORY,
         FILE
     }
@@ -38,10 +35,17 @@ namespace CP2077MM
 
     class ModHandling
     {
+
         public ModHandling() { }
 
-        public static async Task<int> MOD_INSTALL(string path, INSTALLATION_TYPE type, PACKAGE_TYPE ptype)
+        public static async Task<int> MOD_INSTALL(string path, INSTALLATION_TYPE type, PACKAGE_TYPE ptype, ProgressBar pB)
         {
+            // Init ProgressBar
+            pB.Visible = true;
+            pB.Minimum = 1;
+            pB.Maximum = 10;
+            pB.Value = 1;
+            pB.Step = 1;
             // Check if file is from Nexus Mods using MD5 hash
             string hash = string.Empty;
             using (var md5 = MD5.Create())
@@ -66,6 +70,7 @@ namespace CP2077MM
                 MessageBox.Show("This mod is already installed!", "Mod Installer");
                 return -1;
             }
+            pB.PerformStep();
 
             // STEP 2: Verify mod integrity
             APIConnection con = new APIConnection(MainProgram.PROFILE_FILE.apikey);
@@ -75,7 +80,7 @@ namespace CP2077MM
                 // Error occurred
                 return -1;
             }
-
+            pB.PerformStep();
 
             // STEP 3: Parse API Call
             dynamic response = JArray.Parse(result);
@@ -84,7 +89,16 @@ namespace CP2077MM
             long mod_id = (long)mod["mod_id"];
             JObject details = (JObject)response[0]["file_details"];
             string version = (string)mod["version"];
+            pB.PerformStep();
 
+            // Check if a different version of this mod is already installed
+            ModEntry difVersion = modIndex.getEntry(mod_id);
+            if (difVersion != null)
+            {
+                string msg = "[WARNING]: You have a different version of " + difVersion.name + " (version: " + difVersion.version + ") installed! Please uninstall the other version first! Aborting this installation...";
+                MessageBox.Show(msg, "Warning");
+                return -1;
+            }
             // STEP 4: Check requirements
             List<Requirement> requirements = await Browser.getRequirements(mod_id);
             List<Requirement> unsatisfied = new List<Requirement>();
@@ -100,6 +114,7 @@ namespace CP2077MM
                     satisfied.Add(req);
                 }
             }
+            pB.PerformStep();
 
             // Show unsatisfied requirements
             if (unsatisfied.Count > 0)
@@ -130,12 +145,20 @@ namespace CP2077MM
                         });
                     }
                 }
-            }else
+            } else if(ptype == PACKAGE_TYPE._7Z_ARCHIVE)
+            {
+                // STEP 5.3 7z Archive
+                SevenZipArchive archive = SevenZipArchive.Open(path);
+                archive.ExtractToDirectory(extractionPath);
+                archive.Dispose();
+            }
+            else
             {
                 // Unsupported package type
                 MessageBox.Show("This package type is not supported.", "Error: unexpected mod package format");
                 return -1;
             }
+            pB.PerformStep();
 
             // STEP 6: Indexing the archive into a mod_id.json file
             string[] files = Directory.GetFiles(extractionPath, ".", SearchOption.AllDirectories);
@@ -148,6 +171,7 @@ namespace CP2077MM
                 Console.WriteLine(relativePaths[j]);
                 j++;
             }
+            pB.PerformStep();
 
             DirectoryManager dirManager = DirectoryManager.OpenDirectoryManager();
 
@@ -244,6 +268,8 @@ namespace CP2077MM
                 MessageBox.Show("This type of installation is not supported right now!", "Installation Method");
                 return -1;
             }
+            pB.PerformStep();
+
             // saving muliMod directories
             dirManager.Save();
 
@@ -251,9 +277,12 @@ namespace CP2077MM
             ModEntry entry = new ModEntry(mod_id, hash, name, version);
             modIndex.addEntry(entry);
             modIndex.Save();
+            pB.PerformStep();
 
             Directory.Delete(extractionPath, true);
+            pB.PerformStep();
             MessageBox.Show("Nova Choom! Your mod was installed successully! Have fun playing <3", "Chromed-Up!");
+            pB.Visible = false;
             return 0;
         }
 

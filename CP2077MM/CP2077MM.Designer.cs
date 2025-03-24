@@ -144,6 +144,7 @@ namespace WinFormsApp1
             menu_install_file.Name = "menu_install_file";
             menu_install_file.Size = new Size(315, 24);
             menu_install_file.Text = "Install Standalone Files/Directories";
+            menu_install_file.Click += menu_install_file_Click;
             // 
             // browseModsToolStripMenuItem
             // 

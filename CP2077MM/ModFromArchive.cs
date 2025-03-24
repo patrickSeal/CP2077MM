@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.IO;
 
 namespace CP2077MM
 {
     public partial class ModFromArchive : Form
     {
-        public ModFromArchive()
+        private ProgressBar pB;
+        public ModFromArchive(ProgressBar pB)
         {
             InitializeComponent();
+            this.pB = pB;
         }
 
         private void ModFromZip_Load(object sender, EventArgs e)
         {
-            file_dialog_select_zip.Filter = "Archives|*.zip;*.rar;";
+            file_dialog_select_zip.Filter = "Archives|*.zip;*.rar;*.7z";
             radio_standard.Checked = true;
             radio_custom.Checked = false;
         }
@@ -35,11 +29,15 @@ namespace CP2077MM
                 this.Close();
                 string file_type = Path.GetExtension(modPath);
                 if (file_type == ".zip") {
-                    await ModHandling.MOD_INSTALL(modPath, INSTALLATION_TYPE.STANDARD, PACKAGE_TYPE.ZIP_ARCHIVE);
+                    await ModHandling.MOD_INSTALL(modPath, INSTALLATION_TYPE.STANDARD, PACKAGE_TYPE.ZIP_ARCHIVE, pB);
                 }else if(file_type == ".rar")
                 {
-                    await ModHandling.MOD_INSTALL(modPath, INSTALLATION_TYPE.STANDARD, PACKAGE_TYPE.RAR_ARCHIVE);
-                }else
+                    await ModHandling.MOD_INSTALL(modPath, INSTALLATION_TYPE.STANDARD, PACKAGE_TYPE.RAR_ARCHIVE, pB);
+                }else if(file_type == ".7z")
+                {
+                    await ModHandling.MOD_INSTALL(modPath, INSTALLATION_TYPE.STANDARD, PACKAGE_TYPE._7Z_ARCHIVE, pB);
+                }
+                else
                 {
                     MessageBox.Show("This file type is not supported!", "Error: unexpected file type");
                 }
@@ -54,6 +52,7 @@ namespace CP2077MM
             {
                 // UNREACHABLE STATE
             }
+            pB.Visible = false;
         }
 
         /*
