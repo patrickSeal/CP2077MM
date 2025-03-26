@@ -169,7 +169,7 @@ namespace WinFormsApp1
 
         private void uninstallModByIDToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            UninstallByID uninstallByID = new UninstallByID();
+            UninstallByID uninstallByID = new UninstallByID(pgB_main);
             uninstallByID.ShowDialog();
             updateModTree();
         }
@@ -313,7 +313,7 @@ namespace WinFormsApp1
             }
             TreeNode id = modView.SelectedNode.FirstNode.NextNode;
             long mod_id = Int64.Parse(id.Text.Substring(3));
-            ModHandling.MOD_DELETE(mod_id);
+            ModHandling.MOD_DELETE(mod_id, pgB_main);
             updateModTree();
         }
 

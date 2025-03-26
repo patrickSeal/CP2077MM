@@ -61,10 +61,14 @@ namespace WinFormsApp1
             mod_context = new ContextMenuStrip(components);
             uninstallToolStripMenuItem = new ToolStripMenuItem();
             pgB_main = new ProgressBar();
+            tabControl_01 = new TabControl();
+            tbPg_01 = new TabPage();
+            tbPg_02 = new TabPage();
             ((System.ComponentModel.ISupportInitialize)img_cyberpunk).BeginInit();
             ((System.ComponentModel.ISupportInitialize)img_github).BeginInit();
             menuStrip1.SuspendLayout();
             mod_context.SuspendLayout();
+            tabControl_01.SuspendLayout();
             SuspendLayout();
             // 
             // img_cyberpunk
@@ -273,7 +277,7 @@ namespace WinFormsApp1
             modView.BackColor = Color.White;
             modView.Location = new Point(12, 90);
             modView.Name = "modView";
-            modView.Size = new Size(263, 761);
+            modView.Size = new Size(263, 732);
             modView.TabIndex = 7;
             modView.AfterSelect += modView_AfterSelect;
             modView.NodeMouseClick += modView_NodeMouseClick;
@@ -334,10 +338,43 @@ namespace WinFormsApp1
             // 
             // pgB_main
             // 
-            pgB_main.Location = new Point(281, 828);
+            pgB_main.BackColor = SystemColors.ButtonHighlight;
+            pgB_main.Location = new Point(12, 828);
             pgB_main.Name = "pgB_main";
-            pgB_main.Size = new Size(1461, 23);
+            pgB_main.Size = new Size(1730, 23);
             pgB_main.TabIndex = 11;
+            // 
+            // tabControl_01
+            // 
+            tabControl_01.Controls.Add(tbPg_01);
+            tabControl_01.Controls.Add(tbPg_02);
+            tabControl_01.Font = new Font("Play", 9.749999F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            tabControl_01.Location = new Point(281, 54);
+            tabControl_01.Name = "tabControl_01";
+            tabControl_01.SelectedIndex = 0;
+            tabControl_01.Size = new Size(761, 768);
+            tabControl_01.TabIndex = 12;
+            // 
+            // tbPg_01
+            // 
+            tbPg_01.BackColor = SystemColors.ButtonHighlight;
+            tbPg_01.Font = new Font("Play", 9.749999F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            tbPg_01.Location = new Point(4, 26);
+            tbPg_01.Name = "tbPg_01";
+            tbPg_01.Padding = new Padding(3);
+            tbPg_01.Size = new Size(753, 738);
+            tbPg_01.TabIndex = 0;
+            tbPg_01.Text = "Archive Load Order";
+            // 
+            // tbPg_02
+            // 
+            tbPg_02.BackColor = SystemColors.ButtonHighlight;
+            tbPg_02.Location = new Point(4, 24);
+            tbPg_02.Name = "tbPg_02";
+            tbPg_02.Padding = new Padding(3);
+            tbPg_02.Size = new Size(753, 740);
+            tbPg_02.TabIndex = 1;
+            tbPg_02.Text = "Work in Progress";
             // 
             // CP2077MM
             // 
@@ -347,6 +384,7 @@ namespace WinFormsApp1
             BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
             BackgroundImageLayout = ImageLayout.Stretch;
             ClientSize = new Size(1754, 863);
+            Controls.Add(tabControl_01);
             Controls.Add(pgB_main);
             Controls.Add(lbl_update);
             Controls.Add(btn_view_refresh);
@@ -372,6 +410,7 @@ namespace WinFormsApp1
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             mod_context.ResumeLayout(false);
+            tabControl_01.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -405,5 +444,8 @@ namespace WinFormsApp1
         private ToolStripMenuItem uninstallToolStripMenuItem;
         private ToolStripMenuItem profileCyberpunk2077ToolStripMenuItem;
         private ProgressBar pgB_main;
+        private TabControl tabControl_01;
+        private TabPage tbPg_01;
+        private TabPage tbPg_02;
     }
 }

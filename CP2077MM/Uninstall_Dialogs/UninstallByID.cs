@@ -12,9 +12,11 @@ namespace CP2077MM.Uninstall_Dialogs
 {
     public partial class UninstallByID : Form
     {
-        public UninstallByID()
+        ProgressBar pb;
+        public UninstallByID(ProgressBar pb)
         {
             InitializeComponent();
+            this.pb = pb;
         }
 
         private void btn_uninstall_Click(object sender, EventArgs e)
@@ -30,7 +32,7 @@ namespace CP2077MM.Uninstall_Dialogs
                 return;
             }
             Console.WriteLine("[DEBUG]: mod_id to be uninstalled " + mod_id);
-            if (ModHandling.MOD_DELETE(mod_id) == -1)
+            if (ModHandling.MOD_DELETE(mod_id, pb) == -1)
             {
                 Console.WriteLine("[ERROR]: Something went wrong!!");
             }

@@ -1,5 +1,6 @@
 ﻿using CP2077MM.CP2077MM_Files;
 using CP2077MM.Mod_Install;
+using CP2077MM.Uninstall_Dialogs;
 using CP2077MM.Web;
 using Newtonsoft.Json.Linq;
 using SharpCompress.Archives;
@@ -130,7 +131,7 @@ namespace CP2077MM
             if (ptype == PACKAGE_TYPE.ZIP_ARCHIVE)
             {
                 // STEP 5.1 ZIP ARCHIVES
-                ZipFile.ExtractToDirectory(path, extractionPath);
+                ZipFile.ExtractToDirectory(path, extractionPath, true);
             }else if(ptype == PACKAGE_TYPE.RAR_ARCHIVE)
             {
                 // STEP 5.2 RAR ARCHIVES 
@@ -260,7 +261,25 @@ namespace CP2077MM
                 foreach(Requirement requirement in satisfied)
                 {
                     modFile.setReqInstalled(requirement.mod_id, true);
+
+                    // add a dependency to the modfile of the satisfied requirement
+                    ModFile relation = ModFile.Open(requirement.mod_id);
+                    relation.addDependency(mod_id);
+                    relation.Save();
                 }
+
+                // check if there are mods installed that depend on this mod
+                foreach(ModEntry dependent_mods in modIndex.getEntries())
+                {
+                    ModFile file = ModFile.Open(dependent_mods.mod_id);
+                    if (file.containsRequirement(mod_id))
+                    {
+                        modFile.addDependency(dependent_mods.mod_id);
+                        file.setReqInstalled(mod_id, true);
+                    }
+                    file.Save();
+                }
+
                 modFile.Save();
             }
             else
@@ -291,22 +310,58 @@ namespace CP2077MM
             return 0;
         }
 
-        public static int MOD_DELETE(long mod_id)
+        public static int MOD_DELETE(long mod_id, ProgressBar pb)
         {
+            pb.Visible = true;
+            pb.Minimum = 1;
+            pb.Maximum = 5;
+            pb.Value = 1;
+            pb.Step = 1;
             // STEP 1: Check if mod is actually installed
             ModIndex modIndex = ModIndex.OpenModIndex();
             if (modIndex.containsMOD_ID(mod_id) == -1) return -1;
             ModEntry modEntry = modIndex.getEntry(mod_id);
+            pb.PerformStep();
 
             // STEP 2: Remove associated files
             ModFile modFile = ModFile.Open(mod_id);
-            modFile.DeleteModFiles();
+            pb.PerformStep();
+            // STEP 3: check for dependent mods
+            List<Dependency_Raw> dependent_mods = modFile.GetDependencies();
+            if (dependent_mods.Count > 0)
+            {
+                ModHasDependentModsInstalled dependencyDialog = new ModHasDependentModsInstalled(dependent_mods, modIndex, modEntry.name);
+                var response = dependencyDialog.ShowDialog();
+                // abort uninstallation if the user does not want to continue
+                if (response == DialogResult.Cancel)
+                {
+                    pb.Visible = false;
+                    return -1;
+                }
+            }
+            foreach(Dependency_Raw req in modFile.getRequirements())
+            {
+                if (req.installed)
+                {
+                    ModFile reqFile = ModFile.Open(req.mod_id);
+                    reqFile.removeDependency(mod_id);
+                    reqFile.Save();
+                }
+            }
 
-            // STEP 3: Remove entry from ModIndex file
+
+            pb.PerformStep() ;
+            // STEP 4:
+            // Delete the mod files
+            modFile.DeleteModFiles();
+            pb.PerformStep();
+            // STEP 5:
+            // Remove entry from ModIndex file
             modIndex.removeEntryByID(mod_id);
             modIndex.Save();
             string msg = modEntry.name + " was deleted successfully, all files should be deleted!";
             MessageBox.Show(msg, "Info");
+            pb.Visible = false;
             return 0;
         }
     }

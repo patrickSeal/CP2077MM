@@ -15,7 +15,7 @@ namespace CP2077MM.CP2077MM_Files
     {
         public long mod_id { get; set; } = 0;
         public string[] files { get; set; } = new string[0];
-        public Dependency_Raw[] dependencies { get; set; } = new Dependency_Raw[0];
+        public List<Dependency_Raw> dependencies { get; set; } = new List<Dependency_Raw>();
         public Dependency_Raw[] requirements { get; set; } = new Dependency_Raw[0];
         
     }
@@ -25,7 +25,8 @@ namespace CP2077MM.CP2077MM_Files
     class ModFile
     {
         string[] files;
-        public Dependency_Raw[] dependencies, requirements;
+        public Dependency_Raw[] requirements;
+        List<Dependency_Raw> dependencies;
         long mod_id;
         string PATH;
 
@@ -34,6 +35,7 @@ namespace CP2077MM.CP2077MM_Files
         {
             raw.mod_id = mod_id;
             raw.files = files;
+            dependencies = new List<Dependency_Raw>();
             this.files = files;
             this.mod_id = mod_id;
             this.PATH = Path.Combine(MainProgram.INSTALLED_MODS_PATH, mod_id.ToString() + ".json");
@@ -43,7 +45,8 @@ namespace CP2077MM.CP2077MM_Files
             raw.mod_id = mod_id;
             this.raw = raw;
             this.files = raw.files;
-            this.dependencies = raw.dependencies;
+            if (raw.dependencies == null) dependencies = new List<Dependency_Raw>();
+            else dependencies = raw.dependencies;
             this.requirements = raw.requirements;
             this.mod_id = mod_id;
             this.PATH = Path.Combine(MainProgram.INSTALLED_MODS_PATH, raw.mod_id.ToString() + ".json");
@@ -59,7 +62,9 @@ namespace CP2077MM.CP2077MM_Files
 
             return new ModFile(mod_file, mod_id);
         }
-
+        /**
+         *  Deletes all the tracked files and directories of a mod
+         */
         public void DeleteModFiles()
         {
             // check for each directory if the directoryManager has an entry
@@ -123,15 +128,53 @@ namespace CP2077MM.CP2077MM_Files
             }
         }
 
+        public bool containsRequirement(long mod_id)
+        {
+            foreach(Dependency_Raw req in requirements)
+            {
+                if (req.mod_id == mod_id) return true;
+            }
+            return false;
+        }
+
         public Dependency_Raw[] getRequirements() { return requirements; }
+
+
+        public bool containsDependency(Dependency_Raw dep)
+        {
+            foreach(Dependency_Raw dep_raw in dependencies)
+            {
+                if(dep_raw.mod_id == dep.mod_id) return true;
+            }
+            return false;
+        }
+
+        public List<Dependency_Raw> GetDependencies() { return dependencies; }
 
         public void addDependency(long mod_id)
         {
             Dependency_Raw dependency = new Dependency_Raw();
             dependency.mod_id = mod_id;
             dependency.installed = true;
+            if (!containsDependency(dependency))
+            {
+                dependencies.Add(dependency);
+            }
         }
 
+        public void removeDependency(long mod_id)
+        {
+            Dependency_Raw dependency = new Dependency_Raw();
+            dependency.mod_id = mod_id;
+            dependency.installed = true;
+            foreach(Dependency_Raw dep_raw in dependencies.ToList())
+            {
+                if(dep_raw.mod_id == dependency.mod_id)
+                {
+                    dependencies.Remove(dep_raw);
+                }
+            }
+        }
 
         public void setReqInstalled(long mod_id, bool value)
         {
