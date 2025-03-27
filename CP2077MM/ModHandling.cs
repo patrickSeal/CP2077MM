@@ -96,9 +96,9 @@ namespace CP2077MM
             ModEntry difVersion = modIndex.getEntry(mod_id);
             if (difVersion != null)
             {
-                string msg = "[WARNING]: You have a different version of " + difVersion.name + " (version: " + difVersion.version + ") installed! Please uninstall the other version first! Aborting this installation...";
-                MessageBox.Show(msg, "Warning");
-                return -1;
+                string msg = "[WARNING]: You have a different version of " + difVersion.name + " (version: " + difVersion.version + ") installed! Please uninstall the other version first! If this is a mistake you can continue, this can however corrupt the mod manager (it is not sufficiently tested!). Do you still want to continue with the installation?";
+                var res = MessageBox.Show(msg, "Warning", MessageBoxButtons.YesNo);
+                if (res == DialogResult.No) return -1;
             }
             // STEP 4: Check requirements
             List<Requirement> requirements = await Browser.getRequirements(mod_id);

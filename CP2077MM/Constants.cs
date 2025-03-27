@@ -5,7 +5,7 @@ namespace CP2077MM
     class Constants
     {
         /* Mod Manager Version: */
-        public readonly static string VERSION = "0.2.1-alpha";
+        public readonly static string VERSION = "0.3.0-alpha";
         /** Changelog:
          *  - 0.2.1-alpha            (patch)
          *  - 0.2.0-alpha 22.03.2025 (release)
@@ -22,12 +22,14 @@ namespace CP2077MM
         public readonly static string GIT_REPO = @"https://github.com/patrickSeal/CP2077MM";
         public readonly static string CYBERPUNK2077_NET = @"https://www.cyberpunk.net/";
         public readonly static string NEXUSMODS_WEB = @"https://www.nexusmods.com/cyberpunk2077/mods";
+        public readonly static string DIR_ARCHIVES_PATH = @"archive\pc\mod";
 
         // File names
         public readonly static string FILE_PROFILE_JSON = "profile.json";
         public readonly static string FILE_SETTINGS_JSON = "settings.json";
         public readonly static string MOD_INDEX_JSON = "modIndex.json";
         public readonly static string NAME_DIRECTORY_MANAGER_JSON = "dirManager.json";
+        public readonly static string FILE_MODLIST_TXT = "modlist.txt";
 
         // Dir names
         public readonly static string INSTALLED_MODS_DIR = "installedMods";

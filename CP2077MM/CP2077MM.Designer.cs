@@ -63,12 +63,22 @@ namespace WinFormsApp1
             pgB_main = new ProgressBar();
             tabControl_01 = new TabControl();
             tbPg_01 = new TabPage();
-            tbPg_02 = new TabPage();
+            label1 = new Label();
+            btn_UP = new Button();
+            btn_DOWN = new Button();
+            list_archives = new DataGridView();
+            btn_apply = new Button();
+            btn_load = new Button();
+            mod_id = new DataGridViewTextBoxColumn();
+            name = new DataGridViewTextBoxColumn();
+            file = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)img_cyberpunk).BeginInit();
             ((System.ComponentModel.ISupportInitialize)img_github).BeginInit();
             menuStrip1.SuspendLayout();
             mod_context.SuspendLayout();
             tabControl_01.SuspendLayout();
+            tbPg_01.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)list_archives).BeginInit();
             SuspendLayout();
             // 
             // img_cyberpunk
@@ -347,7 +357,6 @@ namespace WinFormsApp1
             // tabControl_01
             // 
             tabControl_01.Controls.Add(tbPg_01);
-            tabControl_01.Controls.Add(tbPg_02);
             tabControl_01.Font = new Font("Play", 9.749999F, FontStyle.Bold, GraphicsUnit.Point, 0);
             tabControl_01.Location = new Point(281, 54);
             tabControl_01.Name = "tabControl_01";
@@ -358,6 +367,12 @@ namespace WinFormsApp1
             // tbPg_01
             // 
             tbPg_01.BackColor = SystemColors.ButtonHighlight;
+            tbPg_01.Controls.Add(label1);
+            tbPg_01.Controls.Add(btn_UP);
+            tbPg_01.Controls.Add(btn_DOWN);
+            tbPg_01.Controls.Add(list_archives);
+            tbPg_01.Controls.Add(btn_apply);
+            tbPg_01.Controls.Add(btn_load);
             tbPg_01.Font = new Font("Play", 9.749999F, FontStyle.Regular, GraphicsUnit.Point, 0);
             tbPg_01.Location = new Point(4, 26);
             tbPg_01.Name = "tbPg_01";
@@ -366,15 +381,98 @@ namespace WinFormsApp1
             tbPg_01.TabIndex = 0;
             tbPg_01.Text = "Archive Load Order";
             // 
-            // tbPg_02
+            // label1
             // 
-            tbPg_02.BackColor = SystemColors.ButtonHighlight;
-            tbPg_02.Location = new Point(4, 24);
-            tbPg_02.Name = "tbPg_02";
-            tbPg_02.Padding = new Padding(3);
-            tbPg_02.Size = new Size(753, 740);
-            tbPg_02.TabIndex = 1;
-            tbPg_02.Text = "Work in Progress";
+            label1.AutoSize = true;
+            label1.Location = new Point(6, 17);
+            label1.Name = "label1";
+            label1.Size = new Size(349, 17);
+            label1.TabIndex = 6;
+            label1.Text = "Higher means the file will be loaded before the files after it.";
+            // 
+            // btn_UP
+            // 
+            btn_UP.BackgroundImage = (Image)resources.GetObject("btn_UP.BackgroundImage");
+            btn_UP.BackgroundImageLayout = ImageLayout.Stretch;
+            btn_UP.Location = new Point(6, 696);
+            btn_UP.Name = "btn_UP";
+            btn_UP.Size = new Size(36, 36);
+            btn_UP.TabIndex = 5;
+            btn_UP.UseVisualStyleBackColor = true;
+            btn_UP.Click += btn_UP_Click;
+            // 
+            // btn_DOWN
+            // 
+            btn_DOWN.BackgroundImage = (Image)resources.GetObject("btn_DOWN.BackgroundImage");
+            btn_DOWN.BackgroundImageLayout = ImageLayout.Stretch;
+            btn_DOWN.Location = new Point(48, 696);
+            btn_DOWN.Name = "btn_DOWN";
+            btn_DOWN.Size = new Size(36, 36);
+            btn_DOWN.TabIndex = 4;
+            btn_DOWN.UseVisualStyleBackColor = true;
+            btn_DOWN.Click += btn_DOWN_Click;
+            // 
+            // list_archives
+            // 
+            list_archives.AllowUserToAddRows = false;
+            list_archives.AllowUserToDeleteRows = false;
+            list_archives.BackgroundColor = SystemColors.ButtonHighlight;
+            list_archives.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            list_archives.Columns.AddRange(new DataGridViewColumn[] { mod_id, name, file });
+            list_archives.Location = new Point(6, 50);
+            list_archives.MultiSelect = false;
+            list_archives.Name = "list_archives";
+            list_archives.ReadOnly = true;
+            list_archives.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            list_archives.Size = new Size(741, 640);
+            list_archives.TabIndex = 3;
+            list_archives.Click += list_archives_Click;
+            // 
+            // btn_apply
+            // 
+            btn_apply.BackColor = Color.Yellow;
+            btn_apply.Font = new Font("Play", 9.749999F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btn_apply.Location = new Point(604, 696);
+            btn_apply.Name = "btn_apply";
+            btn_apply.Size = new Size(143, 36);
+            btn_apply.TabIndex = 2;
+            btn_apply.Text = "Save Order";
+            btn_apply.UseVisualStyleBackColor = false;
+            btn_apply.Click += btn_apply_Click;
+            // 
+            // btn_load
+            // 
+            btn_load.Font = new Font("Play", 9.749999F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btn_load.Location = new Point(604, 6);
+            btn_load.Name = "btn_load";
+            btn_load.Size = new Size(143, 38);
+            btn_load.TabIndex = 0;
+            btn_load.Text = "Load Archive Mods";
+            btn_load.UseVisualStyleBackColor = true;
+            btn_load.Click += btn_load_Click;
+            // 
+            // mod_id
+            // 
+            mod_id.Frozen = true;
+            mod_id.HeaderText = "Mod ID";
+            mod_id.Name = "mod_id";
+            mod_id.ReadOnly = true;
+            mod_id.SortMode = DataGridViewColumnSortMode.NotSortable;
+            // 
+            // name
+            // 
+            name.HeaderText = "Name";
+            name.Name = "name";
+            name.ReadOnly = true;
+            name.SortMode = DataGridViewColumnSortMode.NotSortable;
+            name.Width = 200;
+            // 
+            // file
+            // 
+            file.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            file.HeaderText = "Archive File";
+            file.Name = "file";
+            file.ReadOnly = true;
             // 
             // CP2077MM
             // 
@@ -411,6 +509,9 @@ namespace WinFormsApp1
             menuStrip1.PerformLayout();
             mod_context.ResumeLayout(false);
             tabControl_01.ResumeLayout(false);
+            tbPg_01.ResumeLayout(false);
+            tbPg_01.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)list_archives).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -446,6 +547,14 @@ namespace WinFormsApp1
         private ProgressBar pgB_main;
         private TabControl tabControl_01;
         private TabPage tbPg_01;
-        private TabPage tbPg_02;
+        private Button btn_load;
+        private Button btn_apply;
+        private DataGridView list_archives;
+        private Button btn_UP;
+        private Button btn_DOWN;
+        private Label label1;
+        private DataGridViewTextBoxColumn mod_id;
+        private DataGridViewTextBoxColumn name;
+        private DataGridViewTextBoxColumn file;
     }
 }

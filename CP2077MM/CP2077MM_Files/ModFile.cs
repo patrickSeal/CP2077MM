@@ -62,6 +62,8 @@ namespace CP2077MM.CP2077MM_Files
 
             return new ModFile(mod_file, mod_id);
         }
+        public string[] GetFiles() { return files; }
+
         /**
          *  Deletes all the tracked files and directories of a mod
          */

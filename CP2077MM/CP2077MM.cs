@@ -1,6 +1,7 @@
 using CP2077MM;
 using CP2077MM.CP2077MM_Files;
 using CP2077MM.Integrity;
+using CP2077MM.LoadOrder;
 using CP2077MM.Uninstall_Dialogs;
 using CP2077MM.Update;
 using CP2077MM.WPF;
@@ -11,7 +12,6 @@ namespace WinFormsApp1
 {
     public partial class CP2077MM : Form
     {
-
         public CP2077MM()
         {
             InitializeComponent();
@@ -329,8 +329,88 @@ namespace WinFormsApp1
 
         private void menu_install_file_Click(object sender, EventArgs e)
         {
-            MainWindow mainWindow = new MainWindow();
-            mainWindow.Show();
+            //MainWindow mainWindow = new MainWindow();
+            //mainWindow.Show();
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        /**
+         * Loads all the possible archive files belonging to all installed mod
+         */
+        private void btn_load_Click(object sender, EventArgs e)
+        {
+            ArchiveLoadOrder archiveLoader = new ArchiveLoadOrder(pgB_main);
+            archiveLoader.LoadArchiveFiles();
+            List<(long, string, string)> list = archiveLoader.GetArchiveFiles();
+            long index = 0;
+            list_archives.Rows.Clear();
+            foreach (var (mod_id, name, file) in list)
+            {
+                list_archives.Rows.Add(mod_id, name, file);
+                index++;
+            }
+        }
+        /**
+         * sets a row to the position of its upper row
+         */
+        private void btn_UP_Click(object sender, EventArgs e)
+        {
+            if (list_archives.SelectedRows.Count != 1) return;
+            var selected = list_archives.SelectedRows[0];
+            var idx_selected = selected.Index;
+            if (idx_selected == 0) return;
+            var top = list_archives.Rows[selected.Index - 1];
+            list_archives.Rows.Remove(selected);
+            list_archives.Rows.Remove(top);
+            list_archives.Rows.Insert(idx_selected - 1, selected);
+            list_archives.Rows.Insert(idx_selected, top);
+            list_archives.CurrentCell = list_archives.Rows[idx_selected - 1].Cells[0];
+            list_archives.Rows[idx_selected].Selected = false;
+            list_archives.Rows[idx_selected - 1].Selected = true;
+        }
+        /**
+         * 
+         */
+        private void list_archives_Click(object sender, EventArgs e)
+        {
+
+        }
+        /**
+         * sets a row to the position of its lower row
+         */
+        private void btn_DOWN_Click(object sender, EventArgs e)
+        {
+            if (list_archives.SelectedRows.Count != 1) return;
+            var selected = list_archives.SelectedRows[0];
+            var idx_selected = selected.Index;
+            if (idx_selected == list_archives.Rows.Count - 1) return;
+            var down = list_archives.Rows[selected.Index + 1];
+            list_archives.Rows.Remove(selected);
+            list_archives.Rows.Remove(down);
+            list_archives.Rows.Insert(idx_selected, down);
+            list_archives.Rows.Insert(idx_selected + 1, selected);
+            list_archives.CurrentCell = list_archives.Rows[idx_selected + 1].Cells[0];
+            list_archives.Rows[idx_selected].Selected = false;
+            list_archives.Rows[idx_selected + 1].Selected = true;
+        }
+
+        private void btn_apply_Click(object sender, EventArgs e)
+        {
+            if (list_archives.Rows.Count <= 0) return;
+            List<string> order = new List<string>();
+            foreach(DataGridViewRow row in list_archives.Rows)
+            {
+                if (row.Cells[2].Value == null) continue;
+                string file = row.Cells[2].Value.ToString();
+                order.Add(file);
+            }
+
+            ArchiveLoadOrder.SaveArchiveLoadOrder(order);
+            MessageBox.Show("The load order for you archive mods was saved successfully!", "Info");
         }
     }
 }
