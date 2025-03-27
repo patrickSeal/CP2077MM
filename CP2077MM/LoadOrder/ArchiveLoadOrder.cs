@@ -47,9 +47,36 @@ namespace CP2077MM.LoadOrder
             pb.PerformStep();
 
             // modlist.txt file already exists
+            List<string> oldlist = new List<string>();
             if (File.Exists(FILE_MODLIST_TXT))
             {
-                // TODO: Load previous load order!
+                // TODO: THIS STUFF RIGHT HERE NEEDS TO BE DONE MORE EFFICIENT SOME DAY!!!
+                TextReader tr = new StreamReader(FILE_MODLIST_TXT);
+                string tmp;
+                while((tmp = tr.ReadLine()) != null)
+                {
+                    oldlist.Add(tmp);
+                }
+                tr.Close();
+
+                foreach (string s in oldlist)
+                {
+                    foreach (ModEntry mod in mods)
+                    {
+                        ModFile modfile = ModFile.Open(mod.mod_id);
+                        string[] files = modfile.GetFiles();
+                        foreach (string file in files)
+                        {
+                            // file is not an archive file
+                            if (!Path.GetExtension(file).Equals(".archive")) continue;
+                            string filename = Path.GetFileName(file);
+                            if (filename.Equals(s))
+                            {
+                                archives.Add((mod.mod_id, mod.name, filename));
+                            }
+                        }
+                    }
+                }
             }
 
 
@@ -63,7 +90,9 @@ namespace CP2077MM.LoadOrder
                     // file is not an archive file
                     if(!Path.GetExtension(file).Equals(".archive")) continue;
                     string filename = Path.GetFileName(file);
-                    archives.Add((mod.mod_id, mod.name, filename));
+                    if (!oldlist.Contains(filename)){
+                        archives.Add((mod.mod_id, mod.name, filename));
+                    }
                 }
                 pb.PerformStep();
             }
@@ -81,7 +110,7 @@ namespace CP2077MM.LoadOrder
                 File.Delete(FILE_MODLIST_TXT);
                 File.Create(FILE_MODLIST_TXT).Dispose();
             }
-                TextWriter writer = new StreamWriter(FILE_MODLIST_TXT);
+            TextWriter writer = new StreamWriter(FILE_MODLIST_TXT);
             foreach (string file in archiveFiles)
             {
                 writer.WriteLine(file);
